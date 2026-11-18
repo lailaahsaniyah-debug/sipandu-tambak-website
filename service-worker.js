@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "sipandu-tambak-v2";
+const CACHE_NAME = "sipandu-tambak-v3";
 
 // File utama website
 const CORE_FILES = [

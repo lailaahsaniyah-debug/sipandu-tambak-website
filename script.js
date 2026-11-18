@@ -2,7 +2,7 @@
 /* ==================================================
    SIPANDU-TAMBAK USM × HUAWEI
    INTERACTIVE PAGE NAVIGATION
-   FINAL VERSION
+   UPDATED VERSION — TEAM READY
 ================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -23,72 +23,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const exploreButton = document.querySelector(".hero .btn");
 
+  // Semua section akan terdeteksi otomatis,
+  // termasuk section Team yang ditambahkan nanti.
   const slideIds = slides.map(slide => slide.id);
 
 
   /* ================================================
-     02. PAGE NAVIGATION
-  ================================================ */
-
-  function showSlide(slideId, updateHistory = true) {
-
-    const targetSlide = document.getElementById(slideId);
-
-    // Validate target page
-    if (
-      !targetSlide ||
-      !targetSlide.matches(".main-content > section")
-    ) {
-      return;
-    }
-
-    const currentSlide = slides.find(
-      slide => slide.classList.contains("active")
-    );
-
-    // Avoid unnecessary navigation
-    if (currentSlide === targetSlide) {
-      updateNavigation(slideId);
-      return;
-    }
-
-    // Hide all sections
-    slides.forEach(slide => {
-      slide.classList.remove("active");
-      slide.scrollTop = 0;
-    });
-
-    // Show selected section
-    targetSlide.classList.add("active");
-
-    // Reset page scroll
-    targetSlide.scrollTop = 0;
-
-    if (mainContent) {
-      mainContent.scrollTop = 0;
-    }
-
-    // Update sidebar
-    updateNavigation(slideId);
-
-    // Update browser URL
-    if (updateHistory) {
-      const newHash = `#${slideId}`;
-
-      if (window.location.hash !== newHash) {
-        history.pushState(
-          { section: slideId },
-          "",
-          newHash
-        );
-      }
-    }
-
-  }
-
-
-  /* ================================================
-     03. SIDEBAR ACTIVE STATE
+     02. SIDEBAR ACTIVE STATE
   ================================================ */
 
   function updateNavigation(slideId) {
@@ -112,23 +53,94 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ================================================
+     03. PAGE NAVIGATION
+  ================================================ */
+
+  function showSlide(slideId, updateHistory = true) {
+
+    const targetSlide = document.getElementById(slideId);
+
+    // Pastikan section tujuan memang tersedia
+    // di dalam main-content.
+    if (
+      !targetSlide ||
+      !targetSlide.matches(".main-content > section")
+    ) {
+      return;
+    }
+
+    const currentSlide = slides.find(
+      slide => slide.classList.contains("active")
+    );
+
+    // Hindari perpindahan yang tidak diperlukan.
+    if (currentSlide === targetSlide) {
+      updateNavigation(slideId);
+      return;
+    }
+
+    // Sembunyikan semua section.
+    slides.forEach(slide => {
+      slide.classList.remove("active");
+      slide.scrollTop = 0;
+    });
+
+    // Tampilkan section tujuan.
+    targetSlide.classList.add("active");
+
+    // Reset posisi scroll.
+    targetSlide.scrollTop = 0;
+
+    if (mainContent) {
+      mainContent.scrollTop = 0;
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+    // Perbarui menu aktif.
+    updateNavigation(slideId);
+
+    // Perbarui URL browser.
+    if (updateHistory) {
+
+      const newHash = `#${slideId}`;
+
+      if (window.location.hash !== newHash) {
+        history.pushState(
+          { section: slideId },
+          "",
+          newHash
+        );
+      }
+
+    }
+
+  }
+
+
+  /* ================================================
      04. INITIAL PAGE
   ================================================ */
 
   function loadInitialPage() {
 
-    const requestedSlide = window.location.hash.substring(1);
+    const requestedSlide =
+      window.location.hash.substring(1);
 
     const initialSlide = slideIds.includes(requestedSlide)
       ? requestedSlide
       : "home";
 
-    // Make sure exactly one section is active
+    // Pastikan hanya satu section yang aktif.
     slides.forEach(slide => {
       slide.classList.remove("active");
     });
 
-    const initialElement = document.getElementById(initialSlide);
+    const initialElement =
+      document.getElementById(initialSlide);
 
     if (initialElement) {
       initialElement.classList.add("active");
@@ -137,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateNavigation(initialSlide);
 
-    // Normalize URL when no valid section is provided
+    // Normalisasi URL jika hash tidak valid.
     if (window.location.hash !== `#${initialSlide}`) {
       history.replaceState(
         { section: initialSlide },
@@ -159,13 +171,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     link.addEventListener("click", event => {
 
-      event.preventDefault();
-
       const href = link.getAttribute("href");
 
+      // Link Admin dan link eksternal tetap bekerja normal.
       if (!href || !href.startsWith("#")) {
         return;
       }
+
+      event.preventDefault();
 
       const slideId = href.substring(1);
 
@@ -199,7 +212,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("popstate", () => {
 
-    const requestedSlide = window.location.hash.substring(1);
+    const requestedSlide =
+      window.location.hash.substring(1);
 
     const targetSlide = slideIds.includes(requestedSlide)
       ? requestedSlide
@@ -218,7 +232,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const target = event.target;
 
-    // Ignore navigation while typing or interacting
+    // Abaikan ketika pengguna sedang mengetik
+    // atau berinteraksi dengan elemen tertentu.
     if (
       target instanceof HTMLElement &&
       (
@@ -231,7 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Ignore modified keyboard shortcuts
+    // Abaikan shortcut keyboard kombinasi.
     if (
       event.altKey ||
       event.ctrlKey ||
@@ -245,13 +260,14 @@ document.addEventListener("DOMContentLoaded", () => {
       slide => slide.classList.contains("active")
     );
 
-    const currentIndex = slideIds.indexOf(activeSlide?.id);
+    const currentIndex =
+      slideIds.indexOf(activeSlide?.id);
 
     if (currentIndex === -1) {
       return;
     }
 
-    // Next section
+    // Section berikutnya.
     if (
       event.key === "ArrowRight" &&
       currentIndex < slideIds.length - 1
@@ -261,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
       showSlide(slideIds[currentIndex + 1]);
     }
 
-    // Previous section
+    // Section sebelumnya.
     else if (
       event.key === "ArrowLeft" &&
       currentIndex > 0
@@ -271,21 +287,22 @@ document.addEventListener("DOMContentLoaded", () => {
       showSlide(slideIds[currentIndex - 1]);
     }
 
-    // First section
+    // Kembali ke Home.
     else if (event.key === "Home") {
 
       event.preventDefault();
 
-      showSlide("home");
+      showSlide(slideIds[0]);
 
     }
 
-    // Last section
+    // Menuju section terakhir,
+    // termasuk Team jika sudah ditambahkan.
     else if (event.key === "End") {
 
       event.preventDefault();
 
-      showSlide("documentation");
+      showSlide(slideIds[slideIds.length - 1]);
 
     }
 
@@ -298,6 +315,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   console.log(
     "SIPANDU-TAMBAK | Interactive Navigation Ready"
+  );
+
+  console.log(
+    "Available Sections:",
+    slideIds
   );
 
 });
