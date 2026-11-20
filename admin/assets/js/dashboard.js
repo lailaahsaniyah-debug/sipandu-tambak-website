@@ -65,7 +65,45 @@ function hasValidSensorData(sensors) {
 }
 
 function loadLastData() {
+ async function loadPublishedLastData() {
   try {
+    const response = await fetch(
+      `data/latest-data.json?t=${Date.now()}`,
+      { cache: 'no-store' }
+    );
+
+    if (!response.ok) return;
+
+    const published = await response.json();
+
+    if (
+      !published ||
+      !isValidNumber(published.receivedAt) ||
+      !hasValidSensorData(published.sensors)
+    ) return;
+
+    if (
+      !_cachedLastData ||
+      Number(published.receivedAt) >
+      Number(_cachedLastData.receivedAt)
+    ) {
+      _cachedLastData = published;
+
+      updateSensorCards(
+        published.sensors,
+        published.sensor_status || {},
+        false
+      );
+
+      updateLastUpdate(published.receivedAt);
+      renderLastDataInfo(false);
+    }
+
+  } catch (err) {
+    console.warn('[Dashboard] Data publik belum tersedia:', err);
+  }
+} 
+try {
     const raw = localStorage.getItem(LAST_DATA_KEY);
     if (!raw) return null;
 
@@ -314,6 +352,7 @@ function initDashboard() {
   buildSensorCards();
 
   _cachedLastData = loadLastData();
+loadPublishedLastData();
 
   if (_cachedLastData) {
     updateSensorCards(
