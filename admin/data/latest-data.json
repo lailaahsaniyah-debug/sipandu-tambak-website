@@ -1,0 +1,12 @@
+﻿{
+  "receivedAt": 1795142055000,
+  "sensors": {
+    "ph": 14.00,
+    "do_mg_l": 0.01,
+    "tds_ppm": 0,
+    "turbidity_ntu": 0.0,
+    "temperature_c": 23.7,
+    "battery_voltage": 13.25
+  },
+  "sensor_status": {}
+}
