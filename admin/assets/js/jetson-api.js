@@ -2,7 +2,7 @@
 'use strict';
 
 const JetsonConfig = {
-  baseURL: 'http://192.168.100.41:8080',          // diisi lewat sidebar (IP Jetson) — contoh: http://192.168.1.101:8080
+  baseURL: 'http://10.146.87.247:8080',          // diisi lewat sidebar (IP Jetson) — contoh: http://192.168.1.101:8080
   defaultPort: 8080,    // port default stream_camera.py di Jetson
   timeout: 5000,
   statusInterval: 3000, // interval polling /api/status (ms)
